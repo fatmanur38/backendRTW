@@ -1,42 +1,25 @@
 {
-  "name": "-backendrtw",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
+  "name": "backend-rtw",
+  "version": "1.0.0",
+  "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
-    "dev": "nodemon --watch src --exec ts-node src/index.ts",
-    "lint": "eslint .",
-    "preview": "vite preview"
+    "dev": "nodemon --watch src --exec ts-node src/index.ts"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.0",
-    "jsonwebtoken": "^9.0.2",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
-    "@eslint/js": "^9.9.0",
+    "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
+    "@types/jsonwebtoken": "^9.0.2",
     "@types/node": "^22.7.4",
-    "@types/react": "^18.3.3",
-    "@types/react-dom": "^18.3.0",
-    "@vitejs/plugin-react": "^4.3.1",
-    "eslint": "^9.9.0",
-    "eslint-plugin-react-hooks": "^5.1.0-rc.0",
-    "eslint-plugin-react-refresh": "^0.4.9",
-    "globals": "^15.9.0",
     "nodemon": "^3.1.7",
     "ts-node": "^10.9.2",
-    "typescript": "^5.6.2",
-    "typescript-eslint": "^8.0.1",
-    "vite": "^5.4.8"
-  },
-  "description": "This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.",
-  "main": "eslint.config.js",
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+    "typescript": "^5.6.2"
+  }
 }

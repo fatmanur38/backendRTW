@@ -2,7 +2,8 @@
   "compilerOptions": {
     "target": "ES6",
     "module": "commonjs",
-    "outDir": "./dist", // Make sure this is set to `./dist`
+    "outDir": "./dist", // Compiled files go here
+    "rootDir": "./src", // Source files are here
     "strict": true,
     "esModuleInterop": true
   },

@@ -5,6 +5,8 @@ import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import cors from 'cors'; // Import CORS
 
+import questionRoutes from './routes/questionRoutes';
+
 // Utils imports
 import { ErrorHandler } from './utils/ErrorHandler';
 
@@ -23,6 +25,8 @@ mongoose
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+app.use('/api', questionRoutes);
 
 
 // Error handling

@@ -1,18 +1,16 @@
-import { Router } from 'express';
-import { createQuestion, getQuestions, updateQuestion, deleteQuestion } from '../controllers/questionControllers'; // Doğru yol ile import
+import express from 'express';
+import { createQuestionPackage, getQuestionPackages ,deleteQuestionPackage, updateQuestionPackage} from '../controllers/question-package.controller';
 
-const router = Router();
+const router = express.Router();
 
-// Soru oluşturma route'u (POST /questions)
-router.post('/questions', createQuestion);
+// Soru paketi oluşturma route'u
+router.post('/', createQuestionPackage);
 
-// Soruları çekme route'u (GET /questions)
-router.get('/questions', getQuestions);
+router.get('/', getQuestionPackages);
 
-// Soruyu güncelleme route'u (PUT /questions/:id)
-router.put('/questions/:id', updateQuestion);
+router.delete('/:id', deleteQuestionPackage);
 
-// Soruyu silme route'u (DELETE /questions/:id)
-router.delete('/questions/:id', deleteQuestion);
+// Soru paketi güncelleme
+router.put('/:id', updateQuestionPackage);
 
 export default router;

@@ -13,7 +13,12 @@ import { ErrorHandler } from './utils/ErrorHandler';
 dotenv.config();
 
 const app: Application = express();
-app.use(cors({ origin: `${process.env.FRONTEND_URL}`, credentials: true })); // Enable CORS
+app.use(cors({
+  origin: `${process.env.FRONTEND_URL}`,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 
 // Database Connection
 mongoose
@@ -54,5 +59,5 @@ const BACKEND_URL = process.env.BACKEND_URL || `http://localhost:${PORT}`;
 app.listen(PORT, () => {
   console.log(`Server is running on ${BACKEND_URL}`);
 }).on('error', (err) => {
-  console.error('Failed to start server:', err);
+  console.error('Failed to start server:', err);
 });

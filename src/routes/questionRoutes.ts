@@ -1,5 +1,5 @@
 import express from 'express';
-import { createQuestionPackage, getQuestionPackages ,deleteQuestionPackage, updateQuestionPackage} from '../controllers/question-package.controller';
+import { createQuestionPackage, getQuestionPackages ,deleteQuestionPackage, updateQuestionPackage,getQuestionPackageById} from '../controllers/question-package.controller';
 
 const router = express.Router();
 
@@ -7,6 +7,9 @@ const router = express.Router();
 router.post('/', createQuestionPackage);
 
 router.get('/', getQuestionPackages);
+
+// ID'ye göre soru paketi getirme route'u
+router.get('/:id', getQuestionPackageById); // Yeni route
 
 router.delete('/:id', deleteQuestionPackage);
 

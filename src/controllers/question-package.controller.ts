@@ -9,7 +9,15 @@ export const createQuestionPackage = async (req: Request, res: Response): Promis
         // Title ve questions kontrolü
         if (!title || !questions) {
             res.status(400).json({ message: 'Title and questions are required.' });
-            return; // Sonuç döndükten sonra fonksiyondan çık
+            return;
+        }
+
+        // Her bir sorunun 'time' alanının integer olup olmadığını kontrol et
+        for (const question of questions) {
+            if (!Number.isInteger(question.time)) {
+                res.status(400).json({ message: `Time for question "${question.question}" must be an integer.` });
+                return;
+            }
         }
 
         // Soru sayısını hesapla
@@ -32,6 +40,7 @@ export const createQuestionPackage = async (req: Request, res: Response): Promis
         res.status(500).json({ message: 'Error creating question package.', error });
     }
 };
+
 
 
 
@@ -82,6 +91,14 @@ export const updateQuestionPackage = async (req: Request, res: Response): Promis
             return;
         }
 
+        // Her bir sorunun 'time' alanının integer olup olmadığını kontrol et
+        for (const question of questions) {
+            if (!Number.isInteger(question.time)) {
+                res.status(400).json({ message: `Time for question "${question.question}" must be an integer.` });
+                return;
+            }
+        }
+
         // Soru sayısını güncelle
         const questionCount = questions.length;
 
@@ -104,3 +121,4 @@ export const updateQuestionPackage = async (req: Request, res: Response): Promis
         res.status(500).json({ message: 'Error updating question package.', error });
     }
 };
+

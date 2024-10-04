@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import cors from 'cors'; // Import CORS
+import interviewRoutes from './routes/interview.routes';
 
 import questionRoutes from './routes/questionRoutes';
 
@@ -32,6 +33,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use('/api/question-packages', questionRoutes);
+app.use('/api/interviews', interviewRoutes);
 
 
 // Error handling

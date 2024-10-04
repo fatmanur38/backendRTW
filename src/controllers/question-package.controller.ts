@@ -122,3 +122,24 @@ export const updateQuestionPackage = async (req: Request, res: Response): Promis
     }
 };
 
+// ID'ye göre soru paketi getirme fonksiyonu
+export const getQuestionPackageById = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { id } = req.params;
+
+        // ID ile veritabanından soru paketini bul
+        const questionPackage = await QuestionPackageModel.findById(id);
+
+        // Eğer soru paketi bulunamazsa 404 yanıtı döndür
+        if (!questionPackage) {
+            res.status(404).json({ message: 'Question package not found.' });
+            return;
+        }
+
+        // Başarılı yanıt ile soru paketini döndür
+        res.status(200).json({ message: 'Question package retrieved successfully.', data: questionPackage });
+    } catch (error) {
+        // Hata yanıtı döndür
+        res.status(500).json({ message: 'Error retrieving question package.', error });
+    }
+};

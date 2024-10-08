@@ -1,57 +1,18 @@
 // src/services/auth.service.ts
+import * as dotenv from 'dotenv';
 
-import User, { IUser } from '../models/user.model';
-import generateToken from '../utils/generateToken';
-import { ErrorHandler } from '../utils/error.handler';
+dotenv.config();
 
-class AuthService {
-  // Kullanıcı kaydı
-  public async register(userData: Partial<IUser>): Promise<IUser> {
-    const existingUser = await User.findOne({ email: userData.email });
-    if (existingUser) {
-      throw new ErrorHandler(400, 'Email already in use');
-    }
+export class AuthService {
+  private masterAdminEmail: string;
+  private masterAdminPassword: string;
 
-    const user = new User({
-      ...userData,
-      role: 'admin', // Rolü 'admin' olarak ayarla
-      status: 'pending', // Durumu 'pending' olarak ayarla
-    });
-    await user.save();
-    return user;
+  constructor() {
+    this.masterAdminEmail = process.env.MASTER_ADMIN_EMAIL || '';
+    this.masterAdminPassword = process.env.MASTER_ADMIN_PASSWORD || '';
   }
 
-  // Kullanıcı girişi
-  public async login(email: string, password: string): Promise<{ user: IUser; token: string }> {
-    const user = await User.findOne({ email });
-    if (!user) {
-      throw new ErrorHandler(401, 'Invalid email or password');
-    }
-
-    if (user.status !== 'approved') {
-      throw new ErrorHandler(403, 'User is not approved yet');
-    }
-
-    const isMatch = await user.comparePassword(password);
-    if (!isMatch) {
-      throw new ErrorHandler(401, 'Invalid email or password');
-    }
-
-    const token = generateToken(user);
-    return { user, token };
-  }
-
-  // Kullanıcı onayı (master_admin tarafından)
-  public async approveUser(userId: string): Promise<IUser> {
-    const user = await User.findById(userId);
-    if (!user) {
-      throw new ErrorHandler(404, 'User not found');
-    }
-
-    user.status = 'approved';
-    await user.save();
-    return user;
+  public verifyCredentials(email: string, password: string): boolean {
+    return email === this.masterAdminEmail && password === this.masterAdminPassword;
   }
 }
-
-export default new AuthService();

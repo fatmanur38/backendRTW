@@ -37,7 +37,7 @@ app.use(cookieParser());
 // Routes
 app.use('/api/question-packages', questionRoutes);
 app.use('/api/interviews', interviewRoutes);
-app.use('/api/auth', authRoutes); // Use Auth Routes
+app.use('/api/auth', authRoutes);
 
 // Error handling
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {

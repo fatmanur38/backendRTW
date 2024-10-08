@@ -1,67 +1,43 @@
 // src/controllers/auth.controller.ts
+import { Request, Response } from 'express';
+import { AuthService } from '../services/auth.service';
+import jwt from 'jsonwebtoken';
 
-import { Request, Response, NextFunction } from 'express';
-import AuthService from '../services/auth.service';
+export class AuthController {
+  private authService: AuthService;
 
-class AuthController {
-  // Kayıt işlemi
-  public async register(req: Request, res: Response, next: NextFunction): Promise<void> {
-    try {
-      const { firstName, lastName, email, phoneNumber, password } = req.body;
-      const user = await AuthService.register({ firstName, lastName, email, phoneNumber, password });
-      res.status(201).json({
-        success: true,
-        message: 'User registered successfully and is pending approval',
-        data: {
-          userId: user._id,
-          email: user.email,
-          status: user.status,
-        },
-      });
-    } catch (error) {
-      next(error);
-    }
+  constructor() {
+    this.authService = new AuthService();
   }
 
-  // Giriş işlemi
-  public async login(req: Request, res: Response, next: NextFunction): Promise<void> {
-    try {
-      const { email, password } = req.body;
-      const { user, token } = await AuthService.login(email, password);
-      res.status(200).json({
-        success: true,
-        message: 'Login successful',
-        data: {
-          userId: user._id,
-          email: user.email,
-          role: user.role,
-          token,
-        },
-      });
-    } catch (error) {
-      next(error);
-    }
-  }
+  // Login işlemi
+  public login = async (req: Request, res: Response): Promise<void> => {
+    const { email, password } = req.body;
+    const isLoginSuccessful = await this.authService.verifyCredentials(email, password);
 
-  // Kullanıcı onayı (master_admin tarafından)
-  public async approveUser(req: Request, res: Response, next: NextFunction): Promise<void> {
-    try {
-      const userId = req.params.id;
-      const user = await AuthService.approveUser(userId);
-      res.status(200).json({
-        success: true,
-        message: 'User approved successfully',
-        data: {
-          userId: user._id,
-          email: user.email,
-          role: user.role,
-          status: user.status,
-        },
+    if (isLoginSuccessful) {
+      // JWT oluşturma
+      const token = jwt.sign({ email }, process.env.SECRET_KEY as string, {
+        expiresIn: '1h',
       });
-    } catch (error) {
-      next(error);
+
+      // Token'ı cookie'ye `HttpOnly` olarak ekleme
+      res.cookie('authToken', token, {
+        httpOnly: true, // Sadece sunucu üzerinden erişim sağlar
+        secure: process.env.NODE_ENV === 'production', // Production'da `true` yapın
+        sameSite: 'strict', // CSRF koruması için
+        maxAge: 60 * 60 * 1000, // 1 saat
+      });
+
+      res.status(200).json({ message: 'Login successful!', token });
+    } else {
+      res.status(401).json({ message: 'Invalid email or password' });
     }
-  }
+  };
+
+  // Logout işlemi
+  public logout = (req: Request, res: Response): void => {
+    res.clearCookie('authToken'); // Cookie'yi temizle
+    res.status(200).json({ message: 'Logout successful!' });
+  };
 }
-
-export default new AuthController();

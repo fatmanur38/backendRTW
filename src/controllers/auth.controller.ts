@@ -26,7 +26,7 @@ export class AuthController {
         httpOnly: true, // Sadece sunucu üzerinden erişim sağlar
         secure: process.env.NODE_ENV === 'production', // Production'da `true` yapın
         sameSite: 'strict', // CSRF koruması için
-        maxAge: 60 * 60 * 1000, // 1 saat
+        maxAge: 60 * 60 * 24000, // 1 saat
       });
 
       res.status(200).json({ message: 'Login successful!', token });

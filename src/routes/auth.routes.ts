@@ -6,7 +6,7 @@ import { authMiddleware } from '../middlewares/auth.middleware';
 const router = express.Router();
 const authController = new AuthController();
 
-router.post('/login', authMiddleware, authController.login);
-router.post('/logout', authController.logout);
+router.post('/login',  authController.login);
+router.post('/logout', authMiddleware, authController.logout);
 
 export default router;

@@ -9,6 +9,7 @@ import cors from 'cors'; // Import CORS
 import interviewRoutes from './routes/interview.routes';
 import questionRoutes from './routes/questionRoutes';
 import authRoutes from './routes/auth.routes'; // Import Auth Routes
+import userRoutes from './routes/user.routes';
 
 // Utils imports
 import { ErrorHandler } from './utils/error.handler';
@@ -38,6 +39,7 @@ app.use(cookieParser());
 app.use('/api/question-packages', questionRoutes);
 app.use('/api/interviews', interviewRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api', userRoutes);
 
 // Error handling
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {

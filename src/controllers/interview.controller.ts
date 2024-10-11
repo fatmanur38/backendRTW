@@ -1,19 +1,13 @@
 import { Request, Response } from 'express';
-import { createInterview , getInterviews ,deleteInterview} from '../services/interview.service';
+import { createInterview, addUsersToInterview, getAllInterviews, deleteInterview, updateInterview } from '../services/interview.service';
 
-
-export const createInterviewHandler = async (req: Request, res: Response): Promise<void> => {
+// Interview oluşturma controller'ı (Mevcut kod)
+export const createInterviewController = async (req: Request, res: Response): Promise<void> => {
   try {
     const { title, packages, questions, expireDate, canSkip, showAtOnce } = req.body;
 
-    // Gerekli alanların varlığını kontrol et
-    if (!title || !packages || !questions || !expireDate) {
-      res.status(400).json({ message: 'Title, packages, questions, and expireDate are required.' });
-      return;
-    }
-
-    // İş mantığını service katmanına delega et
-    const newInterview = await createInterview({
+    // Interview oluşturmak için servisi çağırma
+    const interview = await createInterview({
       title,
       packages,
       questions,
@@ -22,57 +16,104 @@ export const createInterviewHandler = async (req: Request, res: Response): Promi
       showAtOnce,
     });
 
-    // Başarılı yanıt
-    res.status(201).json({ message: 'Interview created successfully.', data: newInterview });
-  } catch (error) {
-    if (error instanceof Error) {
-      // Hata nesnesi bir Error ise
-      res.status(500).json({ message: 'Error creating interview.', error: error.message });
-    } else {
-      // Error nesnesi değilse
-      res.status(500).json({ message: 'Unknown error occurred.' });
-    }
+    res.status(201).json({
+      message: 'Interview başarıyla oluşturuldu.',
+      interview,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      message: 'Interview oluşturulurken bir hata meydana geldi.',
+      error: error.message,
+    });
   }
 };
 
-export const getInterviewsHandler = async (req: Request, res: Response): Promise<void> => {
-    try {
-      // Tüm interview'leri al
-      const interviews = await getInterviews();
-  
-      // Başarılı yanıt
-      res.status(200).json({ message: 'Interviews fetched successfully.', data: interviews });
-    } catch (error) {
-      // Hatanın türünü kontrol et
-      if (error instanceof Error) {
-        // Hata mesajını kullan
-        res.status(500).json({ message: 'Error fetching interviews.', error: error.message });
-      } else {
-        // Bilinmeyen hata durumu
-        res.status(500).json({ message: 'An unknown error occurred while fetching interviews.' });
-      }
-    }
-  };
-  
+// Interview'e kullanıcı ekleme controller'ı
+export const addUsersToInterviewController = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { interviewId } = req.params;
+    const { userIds } = req.body; // Kullanıcı ID'lerinin dizisi
 
-
-  export const deleteInterviewHandler = async (req: Request, res: Response): Promise<void> => {
-    const { id } = req.params; // ID parametrelerini al
-  
-    try {
-      // Belirtilen ID'ye sahip interview'ü sil
-      const deletedInterview = await deleteInterview(id);
-  
-      // Başarılı yanıt
-      res.status(200).json({ message: 'Interview deleted successfully.'});
-    } catch (error) {
-      // Hatanın türünü kontrol et
-      if (error instanceof Error) {
-        // Hata mesajını kullan
-        res.status(500).json({ message: 'Error deleting interview.', error: error.message });
-      } else {
-        // Bilinmeyen hata durumu
-        res.status(500).json({ message: 'An unknown error occurred while deleting interview.' });
-      }
+    if (!Array.isArray(userIds) || userIds.length === 0) {
+      res.status(400).json({ message: 'Kullanıcı ID\'leri geçersiz.' });
+      return;
     }
-  };
+
+    // Kullanıcıları Interview'e eklemek için servisi çağırma
+    const updatedInterview = await addUsersToInterview(interviewId, userIds);
+
+    if (!updatedInterview) {
+      res.status(404).json({ message: 'Interview bulunamadı.' });
+      return;
+    }
+
+    res.status(200).json({
+      message: 'Kullanıcılar başarıyla eklendi.',
+      updatedInterview,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      message: 'Interview\'e kullanıcı eklenirken bir hata meydana geldi.',
+      error: error.message,
+    });
+  }
+};
+
+// Tüm interview'leri dönen controller
+export const getAllInterviewsController = async (req: Request, res: Response): Promise<void> => {
+  try {
+    // Servisi çağırarak tüm interview'leri alıyoruz
+    const interviews = await getAllInterviews();
+    
+    res.status(200).json({
+      message: 'Tüm interview kayıtları başarıyla alındı.',
+      interviews,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      message: 'Interview kayıtları alınırken bir hata oluştu.',
+      error: error.message,
+    });
+  }
+};
+
+// Interview'i ID'ye göre silen controller
+export const deleteInterviewController = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { interviewId } = req.params;
+
+    // Interview'i silmek için servisi çağırıyoruz
+    const deletedInterview = await deleteInterview(interviewId);
+
+    res.status(200).json({
+      message: 'Interview başarıyla silindi.',
+      deletedInterview,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      message: 'Interview silinirken bir hata oluştu.',
+      error: error.message,
+    });
+  }
+};
+
+// Interview'i ID'ye göre güncelleyen controller
+export const updateInterviewController = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { interviewId } = req.params;
+    const data = req.body; // Güncellemek için gönderilen veri
+
+    // Interview'i güncellemek için servisi çağırıyoruz
+    const updatedInterview = await updateInterview(interviewId, data);
+
+    res.status(200).json({
+      message: 'Interview başarıyla güncellendi.',
+      updatedInterview,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      message: 'Interview güncellenirken bir hata oluştu.',
+      error: error.message,
+    });
+  }
+};

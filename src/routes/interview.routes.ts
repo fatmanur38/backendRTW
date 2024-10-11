@@ -1,16 +1,21 @@
 import express from 'express';
-import { createInterviewHandler, getInterviewsHandler, deleteInterviewHandler } from '../controllers/interview.controller';
+import { createInterviewController, addUsersToInterviewController, getAllInterviewsController, deleteInterviewController, updateInterviewController } from '../controllers/interview.controller';
 import { authMiddleware } from '../middlewares/auth.middleware';
-
 const router = express.Router();
 
-// Interview oluşturma route'u
-router.post('/', authMiddleware, createInterviewHandler);
+// Interview oluşturma
+router.post('/interviews',authMiddleware, createInterviewController);
 
-// GET /api/interviews
-router.get('/', authMiddleware, getInterviewsHandler);
+// Kullanıcıları interview'e ekleme
+router.put('/interviews/:interviewId/users', addUsersToInterviewController);
 
-// DELETE route for interviews
-router.delete('/:id', authMiddleware,  deleteInterviewHandler);
+// Tüm interview'leri çekme
+router.get('/interviews', authMiddleware, getAllInterviewsController);
+
+// Interview silme
+router.delete('/interviews/:interviewId', authMiddleware, deleteInterviewController);
+
+// Interview güncelleme
+router.put('/interviews/:interviewId', authMiddleware, updateInterviewController);
 
 export default router;

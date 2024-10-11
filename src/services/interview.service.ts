@@ -1,71 +1,94 @@
-import { QuestionPackageModel } from '../models/question-package.model';
-import Interview from '../models/interviews.model'; // Interview modelini içeri aktarmayı unutmayın
+// services/interviewService.ts
+import Interview from '../models/interviews.model';
+import { IInterview } from '../models/interviews.model';
+import mongoose from 'mongoose';
+import { QuestionPackageModel } from '../models/question-package.model'; // Paket modelini import ediyoruz
+import { v4 as uuidv4 } from 'uuid';
 
-export const createInterview = async (interviewData: any) => {
-  const { title, packages, questions, expireDate, canSkip, showAtOnce } = interviewData;
+interface CreateInterviewDTO {
+  title: string;
+  packages: string[]; // Paket isimleri string olarak geliyor
+  questions: { question: string; time: number }[];
+  expireDate: Date;
+  canSkip: boolean;
+  showAtOnce: boolean;
+}
 
-  // Paket başlıklarına göre ObjectId'leri bulalım
-  const packageIds = await QuestionPackageModel.find({ title: { $in: packages } }).select('_id questions');
+// Interview oluşturma servisi (Mevcut kod)
+export const createInterview = async (data: CreateInterviewDTO): Promise<IInterview> => {
+  try {
+    const questionPackages = await QuestionPackageModel.find({ title: { $in: data.packages } });
+    const packageQuestions = questionPackages.flatMap(pkg => pkg.questions);
+    const allQuestions = [...packageQuestions, ...data.questions];
 
-  // Eğer paketlerden bazıları bulunamazsa hata fırlat
-  if (!packageIds || packageIds.length !== packages.length) {
-    throw new Error('Some packages are not found');
+    const interview = new Interview({
+      title: data.title,
+      packages: questionPackages.map(pkg => pkg._id),
+      questions: allQuestions,
+      expireDate: data.expireDate,
+      canSkip: data.canSkip,
+      showAtOnce: data.showAtOnce,
+      interviewLink: uuidv4(),
+    });
+
+    const savedInterview = await interview.save();
+    return savedInterview;
+  } catch (error) {
+    throw new Error('Interview oluşturulurken bir hata meydana geldi.');
   }
-
-  // Paketlerden soruları al ve ana questions dizisine ekle
-  const packageQuestions = packageIds.reduce((acc: any[], pkg: any) => {
-    return acc.concat(pkg.questions); // Her paket için soruları birleştir
-  }, []);
-
-  // Ana questions dizisi ile paketlerden gelen soruları birleştir
-  const allQuestions = [...packageQuestions, ...questions];
-
-  // Yeni bir interview oluştur
-  const interview = new Interview({
-    title,
-    packages: packageIds, // Burada ObjectId'leri kullanıyoruz
-    questions: allQuestions, // Birleştirilmiş sorular
-    expireDate,
-    canSkip,
-    showAtOnce,
-  });
-
-  return interview.save(); // Yeni interview'ü kaydet
 };
 
+// Interview'e kullanıcı ekleme servisi
+export const addUsersToInterview = async (interviewId: string, userIds: mongoose.Schema.Types.ObjectId[]): Promise<IInterview | null> => {
+  if (!mongoose.Types.ObjectId.isValid(interviewId)) {
+    throw new Error('Geçersiz interview ID\'si.');
+  }
 
-export const getInterviews = async () => {
-    try {
-      // Tüm interview kayıtlarını getir
-      const interviews = await Interview.find().populate('packages'); // package'ları da doldur
-      return interviews;
-    } catch (error) {
-      // Hatanın türünü kontrol et
-      if (error instanceof Error) {
-        throw new Error('Error fetching interviews: ' + error.message);
-      } else {
-        throw new Error('Unknown error occurred while fetching interviews.');
-      }
-    }
-  };
+  try {
+    const updatedInterview = await Interview.findByIdAndUpdate(
+      interviewId,
+      { $addToSet: { users: { $each: userIds } } }, // Aynı kullanıcıyı birden fazla eklemez
+      { new: true }
+    ).exec();
+    
+    return updatedInterview;
+  } catch (error) {
+    throw error;
+  }
+};
 
-  export const deleteInterview = async (id: string) => {
-    try {
-      // Belirtilen ID'ye sahip interview'ü bul ve sil
-      const result = await Interview.findByIdAndDelete(id);
-      
-      // Eğer interview bulunamazsa hata fırlat
-      if (!result) {
-        throw new Error('Interview not found');
-      }
-  
-      return result; // Silinen interview bilgilerini döndür
-    } catch (error) {
-      // Hatanın türünü kontrol et
-      if (error instanceof Error) {
-        throw new Error('Error deleting interview: ' + error.message);
-      } else {
-        throw new Error('Unknown error occurred while deleting interview.');
-      }
+export const getAllInterviews = async () => {
+  try {
+    // Interview'leri veritabanından alıyoruz ve "packages" ve "users" alanlarını populate ediyoruz.
+    const interviews = await Interview.find().populate('packages').populate('users');
+    return interviews;
+  } catch (error) {
+    throw new Error('Interview kayıtları alınırken bir hata oluştu.');
+  }
+};
+
+// Interview'i ID'ye göre silen servis
+export const deleteInterview = async (interviewId: string) => {
+  try {
+    const deletedInterview = await Interview.findByIdAndDelete(interviewId);
+    if (!deletedInterview) {
+      throw new Error('Interview bulunamadı.');
     }
-  };
+    return deletedInterview;
+  } catch (error) {
+    throw new Error('Interview silinirken bir hata oluştu.');
+  }
+};
+
+// Interview'i güncelleyen servis
+export const updateInterview = async (interviewId: string, data: Partial<IInterview>): Promise<IInterview | null> => {
+  try {
+    const updatedInterview = await Interview.findByIdAndUpdate(interviewId, data, { new: true });
+    if (!updatedInterview) {
+      throw new Error('Interview bulunamadı.');
+    }
+    return updatedInterview;
+  } catch (error) {
+    throw new Error('Interview güncellenirken bir hata oluştu.');
+  }
+};

@@ -37,7 +37,7 @@ app.use(cookieParser());
 
 // Routes
 app.use('/api/question-packages', questionRoutes);
-app.use('/api/interviews', interviewRoutes);
+app.use('/api/', interviewRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api', userRoutes);
 

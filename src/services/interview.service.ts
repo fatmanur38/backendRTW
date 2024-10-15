@@ -122,3 +122,17 @@ export const getInterviewById = async (interviewId: string): Promise<IInterview 
     throw new Error('Interview getirilirken bir hata oluştu.');
   }
 };
+
+
+// Interview'i video linkine göre getiren servis
+export const getInterviewByLink = async (link: string): Promise<IInterview | null> => {
+  try {
+    const interview = await Interview.findOne({ interviewLink: link }).populate('packages').populate('users');
+    if (!interview) {
+      throw new Error('Interview bulunamadı.');
+    }
+    return interview;
+  } catch (error) {
+    throw new Error('Interview getirilirken bir hata oluştu.');
+  }
+};

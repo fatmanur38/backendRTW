@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { createInterview, addUsersToInterview, getAllInterviews, deleteInterview, updateInterview , getInterviewById } from '../services/interview.service';
+import { createInterview, addUsersToInterview, getAllInterviews, deleteInterview, updateInterview , getInterviewById , getInterviewByLink} from '../services/interview.service';
 
 // Interview oluşturma controller'ı (Mevcut kod)
 export const createInterviewController = async (req: Request, res: Response): Promise<void> => {
@@ -132,6 +132,35 @@ export const getInterviewByIdController = async (req: Request, res: Response): P
 
     // Servis fonksiyonunu çağırarak interview'i çekiyoruz
     const interview = await getInterviewById(interviewId);
+
+    res.status(200).json({
+      message: 'Interview başarıyla getirildi.',
+      interview,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      message: 'Interview getirilirken bir hata oluştu.',
+      error: error.message,
+    });
+  }
+};
+
+
+
+// Interview'i video linkine göre getiren controller
+export const getInterviewByLinkController = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { link } = req.params;
+
+    // Servis fonksiyonunu çağırarak interview'i link ile alıyoruz
+    const interview = await getInterviewByLink(link);
+
+    if (!interview) {
+      res.status(404).json({
+        message: 'Interview bulunamadı.',
+      });
+      return;
+    }
 
     res.status(200).json({
       message: 'Interview başarıyla getirildi.',

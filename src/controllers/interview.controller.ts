@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { createInterview, addUsersToInterview, getAllInterviews, deleteInterview, updateInterview } from '../services/interview.service';
+import { createInterview, addUsersToInterview, getAllInterviews, deleteInterview, updateInterview , getInterviewById } from '../services/interview.service';
 
 // Interview oluşturma controller'ı (Mevcut kod)
 export const createInterviewController = async (req: Request, res: Response): Promise<void> => {
@@ -118,6 +118,28 @@ export const updateInterviewController = async (req: Request, res: Response): Pr
   } catch (error: any) {
     res.status(500).json({
       message: 'Interview güncellenirken bir hata oluştu.',
+      error: error.message,
+    });
+  }
+};
+
+
+
+// Interview'i ID'ye göre getiren controller
+export const getInterviewByIdController = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { interviewId } = req.params;
+
+    // Servis fonksiyonunu çağırarak interview'i çekiyoruz
+    const interview = await getInterviewById(interviewId);
+
+    res.status(200).json({
+      message: 'Interview başarıyla getirildi.',
+      interview,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      message: 'Interview getirilirken bir hata oluştu.',
       error: error.message,
     });
   }

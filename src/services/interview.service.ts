@@ -96,3 +96,20 @@ export const updateInterview = async (interviewId: string, data: Partial<IInterv
     throw new Error('Interview güncellenirken bir hata oluştu.');
   }
 };
+
+// Interview'i ID'ye göre getiren servis
+export const getInterviewById = async (interviewId: string): Promise<IInterview | null> => {
+  if (!mongoose.Types.ObjectId.isValid(interviewId)) {
+    throw new Error('Geçersiz interview ID\'si.');
+  }
+
+  try {
+    const interview = await Interview.findById(interviewId).populate('packages').populate('users');
+    if (!interview) {
+      throw new Error('Interview bulunamadı.');
+    }
+    return interview;
+  } catch (error) {
+    throw new Error('Interview getirilirken bir hata oluştu.');
+  }
+};

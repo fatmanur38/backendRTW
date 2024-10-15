@@ -1,5 +1,5 @@
 import express from 'express';
-import { createInterviewController, addUsersToInterviewController, getAllInterviewsController, deleteInterviewController, updateInterviewController } from '../controllers/interview.controller';
+import { createInterviewController, addUsersToInterviewController, getAllInterviewsController, deleteInterviewController, updateInterviewController, getInterviewByIdController } from '../controllers/interview.controller';
 import { authMiddleware } from '../middlewares/auth.middleware';
 const router = express.Router();
 
@@ -17,5 +17,8 @@ router.delete('/interviews/:interviewId', authMiddleware, deleteInterviewControl
 
 // Interview güncelleme
 router.put('/interviews/:interviewId', authMiddleware, updateInterviewController);
+
+// Interview'i ID'ye göre çekme
+router.get('/interviews/:interviewId', authMiddleware, getInterviewByIdController);
 
 export default router;

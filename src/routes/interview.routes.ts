@@ -22,6 +22,6 @@ router.put('/interviews/:interviewId', authMiddleware, updateInterviewController
 router.get('/interviews/:interviewId', authMiddleware, getInterviewByIdController);
 
 // Interview'i video linkine göre getiren route
-router.get('/interviews/link/:link', authMiddleware, getInterviewByLinkController);
+router.get('/interviews/link/:link', getInterviewByLinkController);
 
 export default router;

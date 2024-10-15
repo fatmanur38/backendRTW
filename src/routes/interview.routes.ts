@@ -1,5 +1,5 @@
 import express from 'express';
-import { createInterviewController, addUsersToInterviewController, getAllInterviewsController, deleteInterviewController, updateInterviewController, getInterviewByIdController } from '../controllers/interview.controller';
+import { createInterviewController, addUsersToInterviewController, getAllInterviewsController, deleteInterviewController, updateInterviewController, getInterviewByIdController , getInterviewByLinkController} from '../controllers/interview.controller';
 import { authMiddleware } from '../middlewares/auth.middleware';
 const router = express.Router();
 
@@ -20,5 +20,8 @@ router.put('/interviews/:interviewId', authMiddleware, updateInterviewController
 
 // Interview'i ID'ye göre çekme
 router.get('/interviews/:interviewId', authMiddleware, getInterviewByIdController);
+
+// Interview'i video linkine göre getiren route
+router.get('/interviews/link/:link', authMiddleware, getInterviewByLinkController);
 
 export default router;

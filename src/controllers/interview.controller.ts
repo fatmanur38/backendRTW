@@ -6,7 +6,6 @@ export const createInterviewController = async (req: Request, res: Response): Pr
   try {
     const { title, packages, questions, expireDate, canSkip, showAtOnce } = req.body;
 
-    // Interview oluşturmak için servisi çağırma
     const interview = await createInterview({
       title,
       packages,
@@ -17,14 +16,20 @@ export const createInterviewController = async (req: Request, res: Response): Pr
     });
 
     res.status(201).json({
-      message: 'Interview başarıyla oluşturuldu.',
+      message: 'Interview successfully created.',
       interview,
     });
   } catch (error: any) {
-    res.status(500).json({
-      message: 'Interview oluşturulurken bir hata meydana geldi.',
-      error: error.message,
-    });
+    if (error.message.includes('Interview title must be unique')) {
+      res.status(400).json({
+        message: error.message, // Specific message for duplicate title
+      });
+    } else {
+      res.status(500).json({
+        message: 'An error occurred while creating the interview.',
+        error: error.message,
+      });
+    }
   }
 };
 

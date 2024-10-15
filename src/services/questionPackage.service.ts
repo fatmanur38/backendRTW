@@ -2,7 +2,13 @@ import { QuestionPackageModel } from '../models/question-package.model';
 
 // Soru paketi oluşturma servisi
 export const createQuestionPackage = async (title: string, questions: any[]) => {
-    // Soru sayısını hesapla
+    // Önce aynı title ile bir soru paketi var mı kontrol et
+    const existingPackage = await QuestionPackageModel.findOne({ title });
+
+    if (existingPackage) {
+        throw new Error('A question package with this title already exists.');
+    }
+
     const questionCount = questions.length;
 
     // Yeni bir soru paketi oluştur

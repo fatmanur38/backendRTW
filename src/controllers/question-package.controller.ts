@@ -19,13 +19,18 @@ export const createQuestionPackage = async (req: Request, res: Response): Promis
             }
         }
 
-        // Servis katmanına yönlendirme
+        // Aynı title var mı kontrol et
         const newQuestionPackage = await QuestionPackageService.createQuestionPackage(title, questions);
         res.status(201).json({ message: 'Question package created successfully.', data: newQuestionPackage });
-    } catch (error) {
-        res.status(500).json({ message: 'Error creating question package.', error });
+    } catch (error: any) {
+        if (error.message === 'A question package with this title already exists.') {
+            res.status(400).json({ message: error.message });
+        } else {
+            res.status(500).json({ message: 'Error creating question package.', error });
+        }
     }
 };
+
 
 // Tüm soru paketlerini getirme controller'ı
 export const getQuestionPackages = async (req: Request, res: Response): Promise<void> => {

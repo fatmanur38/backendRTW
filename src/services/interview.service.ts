@@ -14,7 +14,7 @@ interface CreateInterviewDTO {
   showAtOnce: boolean;
 }
 
-// Interview oluşturma servisi (Mevcut kod)
+// Interview oluşturma servisi
 export const createInterview = async (data: CreateInterviewDTO): Promise<IInterview> => {
   try {
     const questionPackages = await QuestionPackageModel.find({ title: { $in: data.packages } });
@@ -33,8 +33,12 @@ export const createInterview = async (data: CreateInterviewDTO): Promise<IInterv
 
     const savedInterview = await interview.save();
     return savedInterview;
-  } catch (error) {
-    throw new Error('Interview oluşturulurken bir hata meydana geldi.');
+  } catch (error: any) {
+    // Check for duplicate key error (MongoDB error code 11000)
+    if (error.code === 11000 && error.keyValue.title) {
+      throw new Error('Interview title must be unique. A title with this name already exists.');
+    }
+    throw new Error('An error occurred while creating the interview.');
   }
 };
 

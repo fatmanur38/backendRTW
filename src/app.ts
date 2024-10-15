@@ -17,8 +17,17 @@ import { ErrorHandler } from './utils/error.handler';
 dotenv.config();
 
 const app: Application = express();
+
+const allowedOrigins = [`${process.env.FRONTEND_URL}`, `${process.env.USER_FRONTEND_URL}`]; // İki frontend portu
+
 app.use(cors({
-  origin: `${process.env.FRONTEND_URL}`,
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],

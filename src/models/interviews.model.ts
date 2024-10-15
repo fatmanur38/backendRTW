@@ -18,6 +18,7 @@ const InterviewSchema: Schema<IInterview> = new Schema({
   title: {
     type: String,
     required: true,
+    unique: true,
   },
   packages: [
     {

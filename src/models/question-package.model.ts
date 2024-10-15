@@ -30,6 +30,7 @@ const QuestionPackageSchema: Schema = new Schema({
     title: {
         type: String,
         required: true,
+        unique: true, // Ensure the title is unique
     },
     questionCount: {
         type: Number,

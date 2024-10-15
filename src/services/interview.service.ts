@@ -17,10 +17,18 @@ interface CreateInterviewDTO {
 // Interview oluşturma servisi
 export const createInterview = async (data: CreateInterviewDTO): Promise<IInterview> => {
   try {
+    // Aynı başlıkta bir interview var mı kontrol et
+    const existingInterview = await Interview.findOne({ title: data.title });
+    if (existingInterview) {
+      throw new Error('Interview title must be unique. A title with this name already exists.');
+    }
+
+    // Paketleri al
     const questionPackages = await QuestionPackageModel.find({ title: { $in: data.packages } });
     const packageQuestions = questionPackages.flatMap(pkg => pkg.questions);
     const allQuestions = [...packageQuestions, ...data.questions];
 
+    // Yeni interview oluştur
     const interview = new Interview({
       title: data.title,
       packages: questionPackages.map(pkg => pkg._id),
@@ -31,14 +39,15 @@ export const createInterview = async (data: CreateInterviewDTO): Promise<IInterv
       interviewLink: uuidv4(),
     });
 
+    // Interview'i kaydet
     const savedInterview = await interview.save();
     return savedInterview;
   } catch (error: any) {
-    // Check for duplicate key error (MongoDB error code 11000)
+    // Duplicate key hatası kontrolü (MongoDB error code 11000)
     if (error.code === 11000 && error.keyValue.title) {
       throw new Error('Interview title must be unique. A title with this name already exists.');
     }
-    throw new Error('An error occurred while creating the interview.');
+    throw new Error('Interview title must be unique. A title with this name already exists.');
   }
 };
 

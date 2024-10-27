@@ -10,6 +10,7 @@ import interviewRoutes from './routes/interview.routes';
 import questionRoutes from './routes/questionRoutes';
 import authRoutes from './routes/auth.routes'; // Import Auth Routes
 import userRoutes from './routes/user.routes';
+import s3Routes from './routes/s3.routes';
 
 // Utils imports
 import { ErrorHandler } from './utils/error.handler';
@@ -49,6 +50,7 @@ app.use('/api/question-packages', questionRoutes);
 app.use('/api/', interviewRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api', userRoutes);
+app.use('/api/s3', s3Routes);
 
 // Error handling
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {

@@ -30,3 +30,13 @@ export const getAllVideos = async (): Promise<any> => {
     const response = await axios.get(`${S3_UPLOAD_URL}/${PROJECT_NAME}/${BUCKET_NAME}/${ACCESS_KEY}`);
     return response.data;
 };
+
+export const getVideoById = async (videoId: string): Promise<any> => {
+    const response = await axios.get(`${S3_UPLOAD_URL}/${PROJECT_NAME}/${BUCKET_NAME}/${ACCESS_KEY}/${videoId}`);
+    return response.data;
+};
+
+export const deleteVideoById = async (videoId: string): Promise<any> => {
+    const response = await axios.delete(`${S3_UPLOAD_URL}/${PROJECT_NAME}/${BUCKET_NAME}/${ACCESS_KEY}/${videoId}`);
+    return response.data;
+};

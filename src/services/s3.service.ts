@@ -3,7 +3,7 @@ import axios from 'axios';
 import FormData from 'form-data';
 import fs from 'fs';
 import path from 'path';
-
+//
 const S3_UPLOAD_URL = process.env.S3_UPLOAD_URL;
 const PROJECT_NAME = process.env.PROJECT_NAME;
 const BUCKET_NAME = process.env.BUCKET_NAME;

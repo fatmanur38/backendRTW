@@ -105,6 +105,36 @@ class UserController {
     }
   }
 
+  // Kullanıcı video URL'sini güncelleme
+  public async updateUserVideoUrl(req: Request, res: Response): Promise<void> {
+    try {
+      const { id } = req.params;
+      const { videoUrl } = req.body;
+
+      if (!videoUrl) {
+        res.status(400).json({ message: 'videoUrl sağlanmalıdır.' });
+        return;
+      }
+
+      const updatedUser = await userService.updateUserVideoUrl(id, videoUrl);
+
+      if (!updatedUser) {
+        res.status(404).json({ message: 'Kullanıcı bulunamadı.' });
+        return;
+      }
+
+      res.status(200).json(updatedUser);
+    } catch (error: any) {
+      if (error.message === 'Geçersiz kullanıcı ID\'si.') {
+        res.status(400).json({ message: error.message });
+      } else if (error.name === 'ValidationError') {
+        res.status(400).json({ message: error.message });
+      } else {
+        res.status(500).json({ message: 'Sunucu hatası', error: error.message });
+      }
+    }
+  }
+
   // Diğer kontrolcü metodlarını buraya ekleyebilirsiniz (örneğin, deleteUser)
 }
 

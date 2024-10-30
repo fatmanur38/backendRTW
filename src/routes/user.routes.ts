@@ -17,6 +17,9 @@ router.get('/users', (req, res) => userController.getAllUsers(req, res));
 // Kullanıcıyı güncelleme rotası
 router.put('/users/:id', (req, res) => userController.updateUser(req, res));
 
+// Kullanıcı video URL'sini güncelleme
+router.put('/users/:id/video-url', userController.updateUserVideoUrl);
+
 // Diğer rotaları buraya ekleyebilirsiniz (örneğin, DELETE /users/:id)
 
 export default router;

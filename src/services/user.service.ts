@@ -59,6 +59,24 @@ class UserService {
     }
   }
 
+  // Kullanıcı video URL'sini güncelleme
+  public async updateUserVideoUrl(id: string, videoUrl: string): Promise<IUser | null> {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new Error('Geçersiz kullanıcı ID\'si.');
+    }
+
+    try {
+      const updatedUser = await User.findByIdAndUpdate(
+        id,
+        { videoUrl },
+        { new: true, runValidators: true }
+      ).exec();
+      return updatedUser;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   // Diğer servis metodlarını buraya ekleyebilirsiniz (örneğin, deleteUser)
 }
 

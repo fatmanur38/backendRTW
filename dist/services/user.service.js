@@ -32,7 +32,7 @@ class UserService {
     // Kullanıcıyı ID'ye göre alma
     getUserById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!mongoose_1.default.Types.ObjectId.isValid(id)) {
+            if (!mongoose_1.default.isValidObjectId(id)) {
                 throw new Error('Geçersiz kullanıcı ID\'si.');
             }
             const user = yield user_model_1.default.findById(id).exec();
@@ -54,7 +54,7 @@ class UserService {
     // Kullanıcıyı güncelleme
     updateUser(id, updateData) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!mongoose_1.default.Types.ObjectId.isValid(id)) {
+            if (!mongoose_1.default.isValidObjectId(id)) {
                 throw new Error('Geçersiz kullanıcı ID\'si.');
             }
             try {
@@ -69,7 +69,7 @@ class UserService {
     // Kullanıcı video URL'sini güncelleme
     updateUserVideoUrl(id, videoUrl) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!mongoose_1.default.Types.ObjectId.isValid(id)) {
+            if (!mongoose_1.default.isValidObjectId(id)) {
                 throw new Error('Geçersiz kullanıcı ID\'si.');
             }
             try {

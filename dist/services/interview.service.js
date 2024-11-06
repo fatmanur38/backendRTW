@@ -55,7 +55,7 @@ const createInterview = (data) => __awaiter(void 0, void 0, void 0, function* ()
 exports.createInterview = createInterview;
 // Interview'e kullanıcı ekleme servisi
 const addUsersToInterview = (interviewId, userIds) => __awaiter(void 0, void 0, void 0, function* () {
-    if (!mongoose_1.default.Types.ObjectId.isValid(interviewId)) {
+    if (!mongoose_1.default.isValidObjectId(interviewId)) {
         throw new Error('Geçersiz interview ID\'si.');
     }
     try {
@@ -109,7 +109,7 @@ const updateInterview = (interviewId, data) => __awaiter(void 0, void 0, void 0,
 exports.updateInterview = updateInterview;
 // Interview'i ID'ye göre getiren servis
 const getInterviewById = (interviewId) => __awaiter(void 0, void 0, void 0, function* () {
-    if (!mongoose_1.default.Types.ObjectId.isValid(interviewId)) {
+    if (!mongoose_1.default.isValidObjectId(interviewId)) {
         throw new Error('Geçersiz interview ID\'si.');
     }
     try {

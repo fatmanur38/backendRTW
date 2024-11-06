@@ -1,12 +1,13 @@
 // src/controllers/s3.controller.ts
 import { Request, Response } from 'express';
+import { CustomRequest } from '../types/express'; // CustomRequest tipini dahil edin
 import { uploadToS3 } from '../services/s3.service';
 import { getAllVideos } from '../services/s3.service';
 import { getVideoById } from '../services/s3.service';
 import { deleteVideoById } from '../services/s3.service';
 
 //
-export const uploadFile = async (req: Request, res: Response): Promise<void> => {
+export const uploadFile = async (req: CustomRequest, res: Response): Promise<void> => {
     try {
         if (!req.file) {
             res.status(400).json({ message: 'File is required' });

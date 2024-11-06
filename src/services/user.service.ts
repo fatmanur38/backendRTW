@@ -27,7 +27,7 @@ class UserService {
 
   // Kullanıcıyı ID'ye göre alma
   public async getUserById(id: string): Promise<IUser | null> {
-    if (!mongoose.Types.ObjectId.isValid(id)) {
+    if (!mongoose.isValidObjectId(id)) {
       throw new Error('Geçersiz kullanıcı ID\'si.');
     }
 
@@ -47,7 +47,7 @@ class UserService {
 
   // Kullanıcıyı güncelleme
   public async updateUser(id: string, updateData: UpdateQuery<IUser>): Promise<IUser | null> {
-    if (!mongoose.Types.ObjectId.isValid(id)) {
+    if (!mongoose.isValidObjectId(id)) {
       throw new Error('Geçersiz kullanıcı ID\'si.');
     }
 
@@ -61,7 +61,7 @@ class UserService {
 
   // Kullanıcı video URL'sini güncelleme
   public async updateUserVideoUrl(id: string, videoUrl: string): Promise<IUser | null> {
-    if (!mongoose.Types.ObjectId.isValid(id)) {
+    if (!mongoose.isValidObjectId(id)) {
       throw new Error('Geçersiz kullanıcı ID\'si.');
     }
 

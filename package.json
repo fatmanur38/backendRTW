@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "create-master-admin": "ts-node src/scripts/createMasterAdmin.ts",
     "start": "ts-node src/server.ts",
     "dev": "nodemon src/server.ts"
   },

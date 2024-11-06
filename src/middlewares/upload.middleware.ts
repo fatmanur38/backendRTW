@@ -1,13 +1,9 @@
 import { Request } from 'express';
-import multer from 'multer';
+import multer, { StorageEngine } from 'multer';
 import path from 'path';
 
-interface MulterRequest extends Request {
-  file: Express.Multer.File;
-}
-
-const storage = multer.diskStorage({
-  filename: (req: MulterRequest, file: Express.Multer.File, cb) => {
+const storage: StorageEngine = multer.diskStorage({
+  filename: (req: Request, file: Express.Multer.File, cb: (error: Error | null, filename: string) => void) => {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
     cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
   },

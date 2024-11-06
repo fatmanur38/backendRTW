@@ -1,7 +1,10 @@
-// src/types/express/index.d.ts
-import { Request } from 'express';
-import { File } from 'multer';
+import 'express';
+import { File as MulterFile } from 'multer';
 
-export interface CustomRequest extends Request {
-  file?: File;
+declare global {
+  namespace Express {
+    interface Request {
+      file?: MulterFile; // Optional 'file' property for multer compatibility
+    }
+  }
 }

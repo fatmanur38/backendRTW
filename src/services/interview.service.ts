@@ -53,7 +53,7 @@ export const createInterview = async (data: CreateInterviewDTO): Promise<IInterv
 
 // Interview'e kullanıcı ekleme servisi
 export const addUsersToInterview = async (interviewId: string, userIds: mongoose.Schema.Types.ObjectId[]): Promise<IInterview | null> => {
-  if (!mongoose.Types.ObjectId.isValid(interviewId)) {
+  if (!mongoose.isValidObjectId(interviewId)) {
     throw new Error('Geçersiz interview ID\'si.');
   }
 
@@ -108,7 +108,7 @@ export const updateInterview = async (interviewId: string, data: Partial<IInterv
 
 // Interview'i ID'ye göre getiren servis
 export const getInterviewById = async (interviewId: string): Promise<IInterview | null> => {
-  if (!mongoose.Types.ObjectId.isValid(interviewId)) {
+  if (!mongoose.isValidObjectId(interviewId)) {
     throw new Error('Geçersiz interview ID\'si.');
   }
 

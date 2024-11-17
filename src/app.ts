@@ -42,7 +42,7 @@ const app: Application = express();
 app.use(
   cors({
     origin: [process.env.FRONTEND_URL || "http://localhost:5173", process.env.USER_FRONTEND_URL || "http://localhost:5174" ],
-    methods: ["GET", "POST", "PATCH", "DELETE"],
+    methods: ["GET", "POST", "PATCH", "DELETE","PUT", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true, // Credentials ile ilgili isteklere izin ver
   })

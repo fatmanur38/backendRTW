@@ -20,24 +20,34 @@ dotenv.config();
 const app: Application = express();
 
 //const allowedOrigins = [`${process.env.FRONTEND_URL}`, `${process.env.USER_FRONTEND_URL}`]; // İki frontend portu
-app.use(cookieParser())
 
-app.use(cors({
-  // origin: (origin, callback) => {
-  //   if (!origin || allowedOrigins.includes(origin)) {
-  //     callback(null, true);
-  //   } else {
-  //     callback(new Error('Not allowed by CORS'));
-  //   }
-  // },
-  // credentials: true,
-  // methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  // allowedHeaders: ['Content-Type', 'Authorization'],
-  origin: [process.env.FRONTEND_URL || 'http://localhost:5173' , 'http://localhost:5173'],
-  methods: 'GET,POST,PUT,DELETE',
-  allowedHeaders: 'Content-Type, Authorization',
-  credentials: true, // Bu seçenek, çerezleri etkinleştirir
-}));
+
+// app.use(cors({
+//   // origin: (origin, callback) => {
+//   //   if (!origin || allowedOrigins.includes(origin)) {
+//   //     callback(null, true);
+//   //   } else {
+//   //     callback(new Error('Not allowed by CORS'));
+//   //   }
+//   // },
+//   // credentials: true,
+//   // methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+//   // allowedHeaders: ['Content-Type', 'Authorization'],
+//   origin: [process.env.FRONTEND_URL || 'http://localhost:5173' , 'http://localhost:5173'],
+//   methods: 'GET,POST,PUT,DELETE',
+//   allowedHeaders: 'Content-Type, Authorization',
+//   credentials: true, // Bu seçenek, çerezleri etkinleştirir
+// }));
+
+app.use(
+  cors({
+    origin: [process.env.FRONTEND_URL || "http://localhost:5173", process.env.USER_FRONTEND_URL || "http://localhost:5174" ],
+    methods: ["GET", "POST", "PATCH", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true, // Credentials ile ilgili isteklere izin ver
+  })
+);
+
 
 
 // Enable CORS

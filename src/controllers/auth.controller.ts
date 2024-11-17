@@ -22,7 +22,7 @@ export class AuthController {
       });
 
       // Token'ı cookie'ye `HttpOnly` olarak ekleme
-      res.cookie('jwt', token, {
+      res.cookie('authToken', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production', // Only secure in production (HTTPS)
         maxAge: 1000 * 60 * 60 * 8, // 8 hours

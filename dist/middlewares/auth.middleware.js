@@ -15,7 +15,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.authMiddleware = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const authMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const token = req.cookies.authToken;
+    const token = req.cookies.token;
+    console.log('Cookies:', req.cookies); // Gelen çerezleri kontrol edin
+    console.log('Token:', req.cookies.authToken); // Token var mı kontrol edin
     if (!token) {
         res.status(401).json({ message: 'Access denied. No token provided.' });
         return;

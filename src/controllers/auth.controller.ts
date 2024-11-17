@@ -22,12 +22,13 @@ export class AuthController {
       });
 
       // Token'ı cookie'ye `HttpOnly` olarak ekleme
-      res.cookie('authToken', token, {
+      res.cookie('token', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV == "production" ? true : false,
         maxAge: 2 * 60 * 1000, // 2 dakika
         sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // SameSite=None for cross-origin in production
       });
+      console.log(res.cookie);
 
 
       res.status(200).json({ message: 'Login successful!', token });
@@ -38,7 +39,7 @@ export class AuthController {
 
   // Logout işlemi
   public logout = (req: Request, res: Response): void => {
-    res.clearCookie('authToken'); // Cookie'yi temizle
+    res.clearCookie('token'); // Cookie'yi temizle
     res.status(200).json({ message: 'Logout successful!' });
   };
 }

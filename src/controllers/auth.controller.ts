@@ -22,11 +22,11 @@ export class AuthController {
       });
 
       // Token'ı cookie'ye `HttpOnly` olarak ekleme
-      res.cookie('authToken', token, {
-        httpOnly: true, // Sadece sunucu üzerinden erişim sağlar
-        secure: process.env.NODE_ENV === 'production', // Production'da `true` yapın
-        sameSite: 'strict', // CSRF koruması için
-        maxAge: 60 * 60 * 24000, // 1 saat
+      res.cookie('jwt', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production', // Only secure in production (HTTPS)
+        maxAge: 1000 * 60 * 60 * 8, // 8 hours
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // SameSite=None for cross-origin in production
       });
 
       res.status(200).json({ message: 'Login successful!', token });

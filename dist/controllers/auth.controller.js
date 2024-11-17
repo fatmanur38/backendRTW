@@ -27,12 +27,13 @@ class AuthController {
                     expiresIn: '1h',
                 });
                 // Token'ı cookie'ye `HttpOnly` olarak ekleme
-                res.cookie('authToken', token, {
-                    httpOnly: true, // Sadece sunucu üzerinden erişim sağlar
-                    secure: process.env.NODE_ENV === 'production', // Production'da `true` yapın
-                    sameSite: 'strict', // CSRF koruması için
-                    maxAge: 60 * 60 * 24000, // 1 saat
+                res.cookie('token', token, {
+                    httpOnly: true,
+                    secure: process.env.NODE_ENV == "production" ? true : false,
+                    maxAge: 2 * 60 * 1000, // 2 dakika
+                    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // SameSite=None for cross-origin in production
                 });
+                console.log(res.cookie);
                 res.status(200).json({ message: 'Login successful!', token });
             }
             else {
@@ -41,7 +42,7 @@ class AuthController {
         });
         // Logout işlemi
         this.logout = (req, res) => {
-            res.clearCookie('authToken'); // Cookie'yi temizle
+            res.clearCookie('token'); // Cookie'yi temizle
             res.status(200).json({ message: 'Logout successful!' });
         };
         this.authService = new auth_service_1.AuthService();

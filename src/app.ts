@@ -20,6 +20,7 @@ dotenv.config();
 const app: Application = express();
 
 //const allowedOrigins = [`${process.env.FRONTEND_URL}`, `${process.env.USER_FRONTEND_URL}`]; // İki frontend portu
+app.use(cookieParser())
 
 app.use(cors({
   // origin: (origin, callback) => {

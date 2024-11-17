@@ -25,7 +25,7 @@ export class AuthController {
       res.cookie('token', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV == "production" ? true : false,
-        maxAge: 2 * 60 * 1000, // 2 dakika
+        maxAge: 2 *60 * 60 * 1000, // 2 dakika
         sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // SameSite=None for cross-origin in production
       });
       console.log(res.cookie);

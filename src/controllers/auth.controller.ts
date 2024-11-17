@@ -24,10 +24,11 @@ export class AuthController {
       // Token'ı cookie'ye `HttpOnly` olarak ekleme
       res.cookie('authToken', token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production', // Only secure in production (HTTPS)
-        maxAge: 1000 * 60 * 60 * 8, // 8 hours
+        secure: process.env.NODE_ENV == "production" ? true : false,
+        maxAge: 2 * 60 * 1000, // 2 dakika
         sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // SameSite=None for cross-origin in production
       });
+
 
       res.status(200).json({ message: 'Login successful!', token });
     } else {

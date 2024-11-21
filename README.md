@@ -52,7 +52,7 @@ npm install
 
 `MASTER_ADMIN_EMAIL`=admin@example.com
 
-`MASTER_ADMIN_PASSWORD`=admin@example.com
+`MASTER_ADMIN_PASSWORD`=admin123
 
 `SECRET_KEY`=mysecretkey
 #### S3 yapılandırması
